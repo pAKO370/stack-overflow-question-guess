@@ -1,5 +1,17 @@
 
+const Express = require("express");
+const Router = Express.Router();
+const Request = require("request-promise");
 
+Router.get("/:questionId", function(req,res){
+    __getAnswers(req.params.questionId)
+    .then(function (result) {
+        res.status(200).json(result);
+      })
+      .catch(function (ex) {
+        res.status(400).json(ex)
+      })
+});
 
 /**
  * 
@@ -9,7 +21,7 @@ function __getAnswers(questionId) {
     return new Promise(function (fulfill, reject) {
         var requestAnswerObject = {
             method: "GET",
-            uri: `https://api.stackexchange.com/2.2/questions/${answerIds}/answers?order=desc&sort=activity&site=stackoverflow&filter=withbody`,
+            uri: `https://api.stackexchange.com/2.2/questions/${questionId}/answers?order=desc&sort=activity&site=stackoverflow&filter=withbody`,
             headers: {
                 "Content-Type": "application/json",
                 "Accept-Encoding": "gzip"
@@ -19,10 +31,14 @@ function __getAnswers(questionId) {
         };
         Request(requestAnswerObject)
             .then(function (result) {
-                console.log(result);
+                fulfill(result);
+                return;
             })
             .catch(function (ex) {
-
+                reject(ex);
+                return;
             });
     });
 }
+
+module.exports = Router;

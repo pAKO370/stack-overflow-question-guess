@@ -7,6 +7,7 @@
         "angular-resource": "1.6.10",
         "angular-bootstrap": "0.12.2",
         "angularjs-toaster": "3.0.0",
-        "bootstrap": "3.3.4"
+        "bootstrap": "3.3.4",
+        "angular-sanitize": "1.6.10"
     }
 }

@@ -7,6 +7,10 @@ const app = express();
  *  Routes for getting and saving questions
  */
 app.use("/api/questions", require("./api-routes/question-api"));
+app.use("/api/answers", require("./api-routes/answer-api"));
+
+
+/** Serves up static content */
 app.use(express.static("./angular-application"));
 
 /*app.all('/*', function(req, res, next) {
