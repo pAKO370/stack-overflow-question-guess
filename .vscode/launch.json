@@ -9,6 +9,13 @@
             "request": "launch",
             "name": "Launch Program",
             "program": "${workspaceFolder}/node-application/index.js"
+        },
+        {
+            "name": "ui",
+            "type": "chrome",
+            "request": "launch",
+            "url": "localhost:3000",
+            "webRoot": "${workspaceFolder}/angular-application"
         }
     ]
 }
