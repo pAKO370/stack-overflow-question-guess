@@ -31,7 +31,8 @@ angular.module("app")
                         }
                     });
                     modalInstance.result.then(function (result) {
-                        $http.post('/api/questions', result)
+                        result = JSON.stringify(result);
+                        $http.post('/api/questions', result,{headers: {'Content-Type': 'application/json'} })
                             .then(function successCallback(response) {
                                 // this callback will be called asynchronously
                                 // when the response is available
@@ -47,12 +48,12 @@ angular.module("app")
 
 
                 /**  Get all Questions */
-                $scope.questionsArray = [{ title: "test", question_id: 1 }, { title: "test2", question_id: 2 }]
-                /*$http({
+                $http({
                       method: 'GET',
                       url: '/api/questions'
                   }).then(function successCallback(response) {
-                      $scope.questionsArray = response.data.items;
+                      $scope.questionsArray = response.data.newQuestions;
+                      $scope.attemptedQuestion = response.data.savedQuestion;
                       // this callback will be called asynchronously
                       // when the response is available
                   }, function errorCallback(response) {

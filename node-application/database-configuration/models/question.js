@@ -2,7 +2,7 @@ var Sequelize = require("sequelize");
 
 const questionsReturned = {
 
-    modelName: "questions-returned",
+    modelName: "questionsGuessed",
     /* The list of columns and their corresponding definitions */
     modelColumns: {
         id: {
@@ -12,13 +12,13 @@ const questionsReturned = {
             defaultValue: Sequelize.UUIDV4,
             primaryKey: true
         },
-        questionId: {
-            type: String(255),
+        questionData: {
+            type: Sequelize.BLOB,
             allowNull: true
         }
     },
     modelOptions: {
-        tableName: "questions-returned",
+        tableName: "questionsGuessed",
         charset: "latin1",
         freezeTableName: true,
         createdAt: "timeCreated",
@@ -30,3 +30,5 @@ const questionsReturned = {
     }
 
 };
+
+module.exports = questionsReturned;

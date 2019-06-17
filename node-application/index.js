@@ -2,17 +2,20 @@
 /** Required libraries for the app to run */
 const express = require('express')
 const app = express();
-
+const BodyParser =  require("body-parser");
 /**
  *  Routes for getting and saving questions
  */
-app.use("/api/questions", require("./api-routes/question-api"));
-app.use("/api/answers", require("./api-routes/answer-api"));
 
-
+app.use(BodyParser.json());
+app.use(BodyParser.urlencoded({extended: true}) );
+  
+  
 /** Serves up static content */
 app.use(express.static("./angular-application"));
 
+app.use("/api/questions", require("./api-routes/question-api"));
+app.use("/api/answers", require("./api-routes/answer-api"));
 /*app.all('/*', function(req, res, next) {
     // Just send the index.html for other files to support HTML5Mode
     res.sendFile('angular-appliation' + '/index.html', { root: __dirname });

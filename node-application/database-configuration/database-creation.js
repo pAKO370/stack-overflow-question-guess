@@ -21,7 +21,13 @@ var initDatabase = function () {
             sequelize
                 .authenticate()
                 .then(function (result) {
+                    var model = require("./models/question");
+                    sequelize.define(model.modelName, model.modelColumns, model.modelOptions);
+                    return sequelize.sync();
+                })
+                .then(function () {
                     console.log('Connection has been established successfully.');
+                    global.databaseConnection = sequelize;
                     fulfill();
                 })
                 .catch(function (ex) {
@@ -56,6 +62,9 @@ var initDatabase = function () {
         return new Promise(function (fulfill, reject) {
             createNewDatabase()
                 .then(function (result) {
+                    return initSequelize();
+                })
+                .then(function(result){
                     fulfill(result);
                     return;
                 })
