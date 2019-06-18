@@ -4,8 +4,8 @@
 
 angular.module("app")
     .controller("QuestionListController",
-        ["$scope", "$state", "$http", "$modal",
-            function ($scope, $state, $http, $modal) {
+        ["$scope", "$http", "$modal","QuestionFactory",
+            function ($scope, $http, $modal, QuestionFactory) {
 
                 /** Method to set styles on odd/even rows */
                 $scope.getStyle = function (index) {
@@ -31,37 +31,38 @@ angular.module("app")
                         }
                     });
                     modalInstance.result.then(function (result) {
-                        result = JSON.stringify(result);
-                        $http.post('/api/questions', result,{headers: {'Content-Type': 'application/json'} })
+                        result = result;
+                        $http.post('/api/questions', JSON.stringify(result.question), { headers: { 'Content-Type': 'application/json' } })
                             .then(function successCallback(response) {
+                                $scope.currentScore = result.score;
+                                getAllQuestions();
                                 // this callback will be called asynchronously
                                 // when the response is available
                             }, function errorCallback(response) {
-                                // called asynchronously if an error occurs
-                                // or server returns response with an error status.
+                                toaster.pop("danger", "Error saving result", "");
                             });
 
 
                     });
                 }
+                $scope.isNew = true;
 
-
+                //$scope.questionsArray = [{ title: "test", question_id: 1 }, { title: "test2", question_id: 2 }];
+                //$scope.attemptedQuestion = [{ title: "test other", question_id: 1 }, { title: "test 5555", question_id: 2 }]
 
                 /**  Get all Questions */
-                $http({
-                      method: 'GET',
-                      url: '/api/questions'
-                  }).then(function successCallback(response) {
-                      $scope.questionsArray = response.data.newQuestions;
-                      $scope.attemptedQuestion = response.data.savedQuestion;
-                      // this callback will be called asynchronously
-                      // when the response is available
-                  }, function errorCallback(response) {
-                      // called asynchronously if an error occurs
-                      // or server returns response with an error status.
-                  });
-                  /** Method to switch to next view when question is clicked*/
+                function getAllQuestions() {
+                    QuestionFactory.getQuestions()
+                        .then(function successCallback(response) {
+                            $scope.questionsArray = response.newQuestions;
+                            $scope.attemptedQuestion = response.savedQuestion;
+                            // this callback will be called asynchronously
+                            // when the response is available
+                        }, function errorCallback(response) {
+                            toaster.pop("danger", "Error retrieving questions", "");
+                        });
+                }
 
-
+                getAllQuestions();
             }
         ]);

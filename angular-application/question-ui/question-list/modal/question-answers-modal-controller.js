@@ -4,11 +4,15 @@
 
 angular.module("app")
     .controller("QuestionAnswersModalController",
-        ["$scope", "$http", "$modalInstance", "questionObject", "$sce", "toaster",
-            function ($scope, $http, $modalInstance, questionObject, $sce, toaster) {
+        ["$scope", "$http", "$modalInstance", "questionObject", "$sce", "toaster","QuestionFactory",
+            function ($scope, $http, $modalInstance, questionObject, $sce, toaster,QuestionFactory) {
                 var answerScore = 10;
                 /** Injected question object to use for getting answers */
                 $scope.question = questionObject;
+                var isNew = true;
+                if($scope.question && $scope.question.id){
+                    isNew = false;
+                }
                 $scope.getStyle = function (index) {
                     if (index % 2 === 0) {
                         return { 'background-color': '#cbeced' };
@@ -17,20 +21,12 @@ angular.module("app")
                     }
                 };
                 $scope.question.answers = [{ "body": "<p>THis is an aswer</p>", "is_accepted": true }, { "body": "<p>THis is an aswer</p>", "is_accepted": false }];
-                //$scope.question.answers.body = $sce.trustAsHtml($scope.question.answers[]body);
                 function getAnswers() {
-                    $http({
-                        method: 'GET',
-                        url: `/api/answers/${$scope.question.question_id}`
-                    }).then(function successCallback(response) {
+                    QuestionFactory.getAnswers()
+                    .then(function successCallback(response) {
                         $scope.question.answers = response.data.items;
-                        $scope.question.answers.body = $sce.trustAsHtml($scope.question.answers.body);
-                        // this callback will be called asynchronously
-                        // when the response is available
                     }, function errorCallback(ex) {
-                        console.error(ex);
-                        // called asynchronously if an error occurs
-                        // or server returns response with an error status.
+                        toaster.pop("danger", "Error retrieving answers", "");
                     });
                 }
 
@@ -52,7 +48,7 @@ angular.module("app")
                     }
                 };
                 $scope.closeModal = function () {
-                    $modalInstance.close($scope.question)
+                    $modalInstance.close({question: $scope.question, score: answerScore});
                 }
                 //getAnswers();
             }]);

@@ -1,13 +1,31 @@
 <div class="container">
     <div class="jumbotron bg-info">
-        <h1 class="display-4 text-info">Hello, world!</h1>
-        <p class="lead">This is a simple hero unit, a simple jumbotron-style component for calling extra attention to
-            featured content or information.</p>
+        <h1 class="display-4 text-info">Guess the Stack Overflow Accepted Answer</h1>
+        <p class="lead">Click any question to guess the accepted answer!</p>
         <hr class="my-4">
-        <p>It uses utility classes for typography and spacing to space content out within the larger container.</p>
-        <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
+        <p ng-if="currentScore">You current score is: <span>{{currentScore}}</span></p>
     </div>
-    <ul class="list-group" ng-class="">
-        <li ng-repeat="question in questionsArray" ng-style ="getStyle($index)" class="list-group-item" ng-click="openModal(question)"><h4>{{question.title}}</h4></li>
+    <toaster-container toaster-options="{'position-class': 'toast-top-right', 'close-button':true,'timeout': 1000}">
+        </toaster-container>
+    <div class="row">
+        <div class="col-xs-12 m-b-xs">
+            <div class="btn-group">
+                <button type="button" class="btn btn-primary btn-sm" ng-click="isNew = !isNew" ng-disabled="isNew">New Questions</button>
+                <button type="button" class="btn btn-info btn-sm" ng-click="isNew = !isNew" ng-disabled="!isNew">Guessed Questions</button>
+            </div>
+        </div>
+    </div>
+    <hr>
+    <ul class="list-group" ng-class="" ng-if=isNew>
+        <li ng-repeat="question in questionsArray track by $index" ng-style="getStyle($index)" class="list-group-item"
+            ng-click="openModal(question)">
+            <h4>{{question.title}}</h4>
+        </li>
     </ul>
+    <ul class="list-group" ng-class="" ng-if="!isNew">
+            <li ng-repeat="question in attemptedQuestion track by $index" ng-style="getStyle($index)" class="list-group-item"
+                ng-click="openModal(question)">
+                <h4>{{question.title}}</h4>
+            </li>
+        </ul>
 </div>
