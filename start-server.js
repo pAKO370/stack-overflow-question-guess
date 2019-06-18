@@ -1,0 +1,1 @@
+var startServer = require("./node-application/index");

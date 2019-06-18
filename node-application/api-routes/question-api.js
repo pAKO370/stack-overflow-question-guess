@@ -2,6 +2,7 @@ const Express = require("express");
 const Router = Express.Router();
 const Request = require("request-promise");
 
+/** Endpoint for getting all questions */
 Router.get("/", function (req, res) {
   __getAllQuestions()
     .then(function (result) {
@@ -11,7 +12,7 @@ Router.get("/", function (req, res) {
       res.status(400).json(ex)
     })
 });
-
+/** Endpoint for saving question */
 Router.post("/", function (req, res) {
   __saveQuestion(req.body)
     .then(function (result) {
@@ -22,6 +23,7 @@ Router.post("/", function (req, res) {
     })
 });
 
+/** Private method for asving and editing questions */
 function __saveQuestion(question) {
   return new Promise(function (fulfill, reject) {
     var saveObject = {
@@ -30,7 +32,7 @@ function __saveQuestion(question) {
     /** Using sequelize for basic CRUD due to ease of use */
     /** If the incoming question has an id, it has been created already so it needs to be updated. Id it is a new question, it will be created */
     if (question && question.id) {
-      global.databaseConnection.models.questionsGuessed.update(question.id, saveObject)
+      global.databaseConnection.models.questionsGuessed.update(saveObject, { where: { id: question.id } })
         .then(function (result) {
           fulfill(result);
           return;
@@ -52,6 +54,7 @@ function __saveQuestion(question) {
     }
   });
 }
+/** Takes the data retrieved from the database and maps into an object that mimicks the stack question object */
 function __mapQuestionData(questions) {
   var returnArray = [];
   if (questions && questions.length > 0) {
@@ -70,11 +73,11 @@ function __getAllQuestions() {
   return new Promise(function (fulfill, reject) {
     var returnObject = {
       newQuestions: [],
-      savedQuestion: []
+      savedQuestions: []
     }
     var requestObject = {
       method: "GET",
-      uri: `https://api.stackexchange.com/2.2/search/advanced?accepted=True&order=desc&sort=creation&answers=12&site=stackoverflow`,
+      uri: `https://api.stackexchange.com/2.2/search/advanced?accepted=True&answers=12&site=stackoverflow`,
       headers: {
         "Content-Type": "application/json",
         "Accept-Encoding": "gzip"
@@ -88,7 +91,7 @@ function __getAllQuestions() {
         return global.databaseConnection.models.questionsGuessed.findAll();
       })
       .then(function (results) {
-        returnObject.savedQuestion = __mapQuestionData(results);
+        returnObject.savedQuestions = __mapQuestionData(results);
         fulfill(returnObject);
         return;
       })

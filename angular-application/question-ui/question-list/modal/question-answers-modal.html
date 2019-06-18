@@ -8,10 +8,11 @@
         <div ng-repeat="answer in question.answers" ng-style="getStyle($index)" class="alert" role="alert">
             <div ng-click="checkForAcceptedAnswer(answer)" class="alert-heading col-xs-12">
                 <div class="col-xs-10">
-                    <button type="button" class="btn btn-info" ng-disabled="answer.isGuessed || allGuessed">Click to guess</button>
+                    <button type="button" class="btn btn-info">Click to guess</button>
                 </div>
                 <div class="col-xs-2">
-                    <span ng-if="answer.isGuessed" class="badge badge-secondary">Guessed</span>
+                    <span ng-if="answer.isGuessed > 0" class="badge badge-secondary">Guessed: {{answer.isGuessed}}</span>
+                    <span ng-if="answer.isAccepted" class="badge badge-primary">Accepted Answer</span>
                 </div>
             </div>
             <div>

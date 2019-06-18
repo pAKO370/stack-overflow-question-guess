@@ -7,6 +7,7 @@ const BodyParser =  require("body-parser");
  *  Routes for getting and saving questions
  */
 
+ /** Body parser library to allow json in the request body */
 app.use(BodyParser.json());
 app.use(BodyParser.urlencoded({extended: true}) );
   
@@ -20,6 +21,7 @@ app.use("/api/answers", require("./api-routes/answer-api"));
     // Just send the index.html for other files to support HTML5Mode
     res.sendFile('angular-appliation' + '/index.html', { root: __dirname });
 });
+
 /** Starts a node server  */
 app.listen("3000", function () {
     console.log("Listening on 3000");

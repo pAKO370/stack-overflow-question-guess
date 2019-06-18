@@ -16,7 +16,8 @@ var initDatabase = function () {
         return new Promise(function (fulfill, reject) {
             const sequelize = new Sequelize(Config.mysqlDatabaseName, Config.mysqlUser, Config.mysqlPassword, {
                 host: Config.mysqlHost,
-                dialect: "mysql"
+                dialect: "mysql",
+                logging: false
             });
             sequelize
                 .authenticate()

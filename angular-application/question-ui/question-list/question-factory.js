@@ -40,25 +40,6 @@ angular.module("app").factory("QuestionFactory", ["$http", "$q", function ($http
         }).then(deferSuccess, defercreateError);
         return deferredResult.promise;
     };
-    /** Needs Work --- Gets question and answers for a question that has been saved in the database */
-    factory.getGuessQuestion = function (databaseQuestionId) {
-        var deferredResult = $q.defer();
-
-        var deferSuccess = function (result) {
-            /* Resolve the promise */
-            deferredResult.resolve(result.data);
-        };
-        /* Local callback for error */
-        var defercreateError = function (ex) {
-            /* Reject the promise there was a problem */
-            deferredResult.reject(ex.data);
-        };
-        $http({
-            method: 'GET',
-            url: `/api/answers/${questionId}`
-        }).then(deferSuccess, defercreateError);
-        return deferredResult.promise;
-    };
 
     return factory;
 }]);

@@ -1,6 +1,6 @@
 <div class="container">
     <div class="jumbotron bg-info">
-        <h1 class="display-4 text-info">Guess the Stack Overflow Accepted Answer</h1>
+        <h1 class="display-4 text-info">Guess the Stack Overflow Answer</h1>
         <p class="lead">Click any question to guess the accepted answer!</p>
         <hr class="my-4">
         <p ng-if="currentScore">You current score is: <span>{{currentScore}}</span></p>
@@ -25,7 +25,8 @@
     <ul class="list-group" ng-class="" ng-if="!isNew">
             <li ng-repeat="question in attemptedQuestion track by $index" ng-style="getStyle($index)" class="list-group-item"
                 ng-click="openModal(question)">
-                <h4>{{question.title}}</h4>
+                <h4>{{question.title}}<span ng-if="question.questionSolved" class="badge badge-primary pull-right">Accepted answer found</span></h4>
+                
             </li>
         </ul>
 </div>

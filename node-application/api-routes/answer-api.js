@@ -3,14 +3,25 @@ const Express = require("express");
 const Router = Express.Router();
 const Request = require("request-promise");
 
+/* Gets question with answers */
 Router.get("/:questionId", function(req,res){
-    __getAnswers(req.params.questionId)
+    if(req.query && req.query.isExisting){
+    __getAnswersFromDatabase(req.params.questionId)
     .then(function (result) {
         res.status(200).json(result);
       })
       .catch(function (ex) {
         res.status(400).json(ex)
       })
+    } else {
+        __getAnswers(req.params.questionId)
+    .then(function (result) {
+        res.status(200).json(result);
+      })
+      .catch(function (ex) {
+        res.status(400).json(ex)
+      })
+    }
 });
 
 /**
@@ -40,5 +51,6 @@ function __getAnswers(questionId) {
             });
     });
 }
+
 
 module.exports = Router;

@@ -4,9 +4,10 @@
 
 angular.module("app")
     .controller("QuestionListController",
-        ["$scope", "$http", "$modal","QuestionFactory",
-            function ($scope, $http, $modal, QuestionFactory) {
-
+        ["$scope", "$http", "$modal", "QuestionFactory", "toaster",
+            function ($scope, $http, $modal, QuestionFactory, toaster) {
+                /** Boolean scope variable for displaying questions */
+                $scope.isNew = true;
                 /** Method to set styles on odd/even rows */
                 $scope.getStyle = function (index) {
                     if (index % 2 === 0) {
@@ -15,7 +16,7 @@ angular.module("app")
                         return { 'background-color': '#bac3d3', 'cursor': 'pointer' }
                     }
                 };
-
+                $scope.currentScore = 0;
                 /**
                  *  Method to open modal for question answers
                  */
@@ -31,38 +32,49 @@ angular.module("app")
                         }
                     });
                     modalInstance.result.then(function (result) {
-                        result = result;
-                        $http.post('/api/questions', JSON.stringify(result.question), { headers: { 'Content-Type': 'application/json' } })
-                            .then(function successCallback(response) {
-                                $scope.currentScore = result.score;
-                                getAllQuestions();
-                                // this callback will be called asynchronously
-                                // when the response is available
-                            }, function errorCallback(response) {
-                                toaster.pop("danger", "Error saving result", "");
-                            });
-
-
+                        $scope.questionsArray = [];
+                        if (!result.isSolved) {
+                            result = result;
+                            $http.post('/api/questions', JSON.stringify(result.question), { headers: { 'Content-Type': 'application/json' } })
+                                .then(function successCallback(response) {
+                                    if (result.question.questionSolved) {
+                                        $scope.currentScore += result.score;
+                                    }
+                                    getAllQuestions();
+                                }, function errorCallback(response) {
+                                    toaster.pop("danger", "Error saving result", "");
+                                });
+                        }
                     });
                 }
-                $scope.isNew = true;
 
-                //$scope.questionsArray = [{ title: "test", question_id: 1 }, { title: "test2", question_id: 2 }];
-                //$scope.attemptedQuestion = [{ title: "test other", question_id: 1 }, { title: "test 5555", question_id: 2 }]
-
+                function removeAttemptedQuestions(questions) {
+                    var returnArray = [];
+                    for (var newIndex = 0; newIndex < questions.newQuestions.length; newIndex++) {
+                        var noMatch = true;
+                        for (var existingIndex = 0; existingIndex < questions.savedQuestions.length; existingIndex++) {
+                            if (questions.newQuestions[newIndex].question_id === questions.savedQuestions[existingIndex].question_id) {
+                                noMatch = false;
+                            }
+                        }
+                        if (noMatch) {
+                            returnArray.push(questions.newQuestions[newIndex]);
+                        }
+                    }
+                    return returnArray;
+                }
                 /**  Get all Questions */
                 function getAllQuestions() {
                     QuestionFactory.getQuestions()
                         .then(function successCallback(response) {
-                            $scope.questionsArray = response.newQuestions;
-                            $scope.attemptedQuestion = response.savedQuestion;
-                            // this callback will be called asynchronously
-                            // when the response is available
+                            $scope.questionsArray = removeAttemptedQuestions(response);
+                            $scope.attemptedQuestion = response.savedQuestions;
+
                         }, function errorCallback(response) {
                             toaster.pop("danger", "Error retrieving questions", "");
                         });
                 }
-
+                /** Call method to get questions */
                 getAllQuestions();
             }
         ]);
