@@ -30,9 +30,9 @@ app.listen("3000", function () {
     var databaseInit = new DataBaseInit();
     databaseInit.createDatabaseAndInitSequelize()
         .then(function (result) {
-            console.log("test");
+            console.log("Database table created");
         })
         .catch(function (ex) {
-            console.log("test");
+            console.error(ex);
         })
 });
