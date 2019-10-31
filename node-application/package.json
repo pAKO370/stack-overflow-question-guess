@@ -18,7 +18,7 @@
   "homepage": "https://github.com/pAKO370/stack-overflow-guess#readme",
   "dependencies": {
     "express": "4.17.1",
-    "sequelize": "5.8.9",
+    "sequelize": "5.15.1",
     "mysql2": "1.6.5",
     "request-promise": "4.2.2",
     "request": "2.88.0",
